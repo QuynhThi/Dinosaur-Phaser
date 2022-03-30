@@ -1,0 +1,26 @@
+{
+  "name": "dinosaur",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "start": "cat env-dev > .env && craco start",
+    "start:pro": "cat env-pro > .env && craco start",
+    "start:dev": "react-scripts start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
+    "deploy": "craco build --prod && firebase deploy"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@types/leaflet": "^1.7.4"
+  }
+}
