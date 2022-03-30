@@ -7,6 +7,7 @@
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
     "gh-pages": "^3.2.3",
+    "phaser": "^3.55.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.0",
@@ -14,12 +15,12 @@
   },
   "homepage": "https://quynhthi.github.io/Dinosaur-Phaser/",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "start": "start",
+    "build": "npm run-script build",
+    "test": "test",
+    "eject": "eject",
+    "predeploy": "npm run-script build",
+    "deploy": " build && firebase deploy"
   },
   "eslintConfig": {
     "extends": [
