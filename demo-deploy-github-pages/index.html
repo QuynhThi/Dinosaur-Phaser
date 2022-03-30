@@ -200,7 +200,6 @@
 
       function jump() {
         // nếu khủng long chưa chạm đất thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
-        console.log("a", player.y, innerHeight - 323, groundsScroll.y);
         if (player.y !== groundsScroll.y - 23) {
           return;
         }
@@ -261,8 +260,13 @@
             reload.alpha = 1;
             // nhấn mũi tên lên hoặc space để chơi lại từ đầu
             if ((cursors.space.isDown || cursors.up.isDown) && !isStart) {
+              // reset điểm
+              score = -10;
+              scoreText.setText("Score: " + 0);
+
               gameOver = false;
               isStart = true;
+              isJump = false;
 
               trees.getChildren().forEach((obsticle) => {
                 // khác nhau giữa remove (xóa 1 phần tử trong group), clear (xóa tất cả phần tử trong group), destroy (giống clear + ngắt kết nối group với scene )
@@ -272,9 +276,6 @@
               // lại ẩn hình reload
               reload.alpha = 0;
               gameOverText.alpha = 0;
-
-              // reset điểm
-              score = -10;
             } else {
               return;
             }
