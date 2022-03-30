@@ -200,10 +200,10 @@
       }
 
       function jump() {
-        // nếu khủng long chưa chạm đất (tọa độ 626) thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
-        // if (player.y !== 626) {
-        //   return;
-        // }
+        // nếu khủng long chưa chạm đất thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
+        if (player.y !== groundsScroll.y) {
+          return;
+        }
         // thay đổi tọa độ của khủng long, x = 0 -> khủng long khi nhảy vẫn đứng nguyên chỗ cũ, y = -1100 -> nhảy khỏi mặt đất 1100
         player.setVelocity(0, -1100);
 
@@ -263,7 +263,6 @@
             if ((cursors.space.isDown || cursors.up.isDown) && !isStart) {
               gameOver = false;
               isStart = true;
-              firstJump = true;
 
               trees.getChildren().forEach((obsticle) => {
                 // khác nhau giữa remove (xóa 1 phần tử trong group), clear (xóa tất cả phần tử trong group), destroy (giống clear + ngắt kết nối group với scene )
