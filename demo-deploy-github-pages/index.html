@@ -45,8 +45,7 @@
         scoreText,
         stars,
         googleChrome,
-        reload,
-        defaultY;
+        reload;
       var gameOver = false;
       var isStart = false;
       var isJump = false;
@@ -177,9 +176,6 @@
         // nếu khủng long nhảy qua cây chạm vào ngôi sao thì chạy hàm touchStar
         this.physics.add.overlap(player, stars, touchStar, null, this);
 
-        // tọa độ y mặc định của khủng long
-        defaultY = player.y;
-
         cursors = this.input.keyboard.createCursorKeys();
       }
 
@@ -204,7 +200,8 @@
 
       function jump() {
         // nếu khủng long chưa chạm đất thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
-        if (player.y !== innerHeight - 323) {
+        console.log("a", player.y, innerHeight - 323, groundsScroll.y);
+        if (player.y !== groundsScroll.y - 23) {
           return;
         }
         // thay đổi tọa độ của khủng long, x = 0 -> khủng long khi nhảy vẫn đứng nguyên chỗ cũ, y = -1100 -> nhảy khỏi mặt đất 1100
