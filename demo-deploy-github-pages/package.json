@@ -13,7 +13,7 @@
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.0"
   },
-  "homepage": "https://dinosaur-phaser.netlify.app/index.html",
+  "homepage": "https://quynhthi.github.io/Dinosaur-Phaser/index.html",
   "scripts": {
     "start": "start",
     "build": "npm run-script build",
