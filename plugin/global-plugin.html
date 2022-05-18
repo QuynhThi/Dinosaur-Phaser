@@ -21,7 +21,7 @@
           preload: preload,
           create: create,
           extend: {
-            replaceI: replaceI,
+            replaceText: replaceText,
           },
         },
       };
@@ -33,14 +33,14 @@
       function create() {
         var text = "Quynh Thi test global plugin";
 
-        this.add.text(50, 50, replaceI(text), {
+        this.add.text(50, 50, replaceText(text), {
           fontSize: "60px",
           fill: "#000",
         });
       }
 
-      function replaceI(text) {
-        return text.replace("i", "1");
+      function replaceText(text) {
+        return text.replace("Q", "2");
       }
     </script>
   </body>
