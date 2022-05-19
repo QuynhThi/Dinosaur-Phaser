@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      let width = 500;
+      let height = 300;
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        scale: {
+          // mode: Phaser.Scale.FIT,
+          parent: "phaser-example",
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+          width: 400,
+          height: 300,
+        },
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        physics: {
+          default: "arcade",
+          arcade: {
+            gravity: { y: 300 },
+            debug: false,
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+      var player;
+      var stars;
+      var bombs;
+      var platforms;
+      var cursors;
+      var FKey;
+      var sky;
+
+      function preload() {
+        this.load.image("sky", "../assets/sky.png");
+        this.load.image("ground", "../assets/platform.png");
+        this.load.image("star", "../assets/star.png");
+        this.load.image("bomb", "../assets/bomb.png");
+        this.load.spritesheet("dude", "../assets/dude.png", {
+          frameWidth: 32,
+          frameHeight: 48,
+        });
+      }
+
+      function create() {
+        //  A simple background for our game
+        sky = this.add.image(400, config.scale.height, "sky");
+
+        //  Input Events
+        cursors = this.input.keyboard.createCursorKeys();
+
+        FKey = this.input.keyboard.addKey("F");
+
+        FKey.on(
+          "down",
+          function () {
+            if (this.scale.width === 800) {
+              sky.width = 400;
+              this.scale.setGameSize(400, 300);
+            } else {
+              sky.width = 800;
+              this.scale.setGameSize(800, 600);
+            }
+          },
+          this
+        );
+      }
+    </script>
+  </body>
+</html>

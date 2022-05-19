@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        scale: {
+          mode: Phaser.Scale.FIT,
+          parent: "phaser-example",
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+          width: 800,
+          height: 300,
+        },
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        physics: {
+          default: "arcade",
+          arcade: {
+            gravity: { y: 300 },
+            debug: false,
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+      var player;
+      var stars;
+      var bombs;
+      var platforms;
+      var cursors;
+      var FKey;
+
+      function preload() {
+        this.load.image("sky", "../assets/sky.png");
+        this.load.image("ground", "../assets/platform.png");
+        this.load.image("star", "../assets/star.png");
+        this.load.image("bomb", "../assets/bomb.png");
+        this.load.spritesheet("dude", "../assets/dude.png", {
+          frameWidth: 32,
+          frameHeight: 48,
+        });
+      }
+
+      function create() {
+        var canvas = document.querySelector("canvas");
+
+        //  A simple background for our game
+        this.add.image(400, 300, "sky");
+
+        //  The platforms group contains the ground and the 2 ledges we can jump on
+        platforms = this.physics.add.staticGroup();
+
+        //  Here we create the ground.
+        //  Scale it to fit the width of the game (the original sprite is this.scale.widthx32 in size)
+        platforms.create(400, 300, "ground").setScale(2).refreshBody();
+
+        //  Now let's create some ledges
+        platforms.create(600, 300, "ground");
+        platforms.create(50, 150, "ground");
+        platforms.create(750, 120, "ground");
+
+        // The player and its settings
+        player = this.physics.add.sprite(100, 150, "dude");
+
+        //  Player physics properties. Give the little guy a slight bounce.
+        player.setBounce(0.2);
+        player.setCollideWorldBounds(true);
+
+        //  Input Events
+        cursors = this.input.keyboard.createCursorKeys();
+
+        //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+        stars = this.physics.add.group({
+          key: "star",
+          repeat: 11,
+          setXY: { x: 12, y: 0, stepX: 70 },
+        });
+
+        stars.children.iterate(function (child) {
+          //  Give each star a slightly different bounce
+          child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        });
+
+        this.physics.add.collider(player, platforms);
+        this.physics.add.collider(stars, platforms);
+
+        FKey = this.input.keyboard.addKey("F");
+
+        FKey.on(
+          "down",
+          function () {
+            if (this.scale.isFullscreen) {
+              this.scale.stopFullscreen();
+            } else {
+              this.scale.startFullscreen();
+              canvas.style.width = 1000;
+              canvas.style.height = 600;
+            }
+          },
+          this
+        );
+      }
+    </script>
+  </body>
+</html>

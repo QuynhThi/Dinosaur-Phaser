@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+          arcade: {
+            debug: true, // true: hiện hướng vật thể di chuyển, false: không hiện
+            gravity: { y: 200 }, // trọng lực của vật thể, số càng to thì vật rơi xuống càng nhanh
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+
+      function preload() {
+        this.load.image("star", "../assets/star.png");
+      }
+
+      function create() {
+        var star = this.physics.add.group({
+          key: "star",
+          quantity: 24, // số lượng vật thể được tạo ra
+          bounceX: 1, // độ nảy ra của vật thể x, y (theo phương ngang, theo phương dọc): số thực từ 0 đến 1
+          bounceY: 1, // độ nảy ra của vật thể x, y (theo phương ngang, theo phương dọc): số thực từ 0 đến 1
+          collideWorldBounds: true, // true: khi vật thể va chạm sẽ có 1 độ nảy ra, false: không có hiện tượng nảy ra
+          velocityX: 300, // vận tốc của vật thể x, y (theo phương ngang, theo phương dọc): số càng to thì vật thể chuyển động càng nhanh
+          velocityY: 150, // vận tốc của vật thể x, y (theo phương ngang, theo phương dọc): số càng to thì vật thể chuyển động càng nhanh
+          setXY: { x: 20, y: 20, stepX: 20, stepY: 20 }, // tọa độ x, y khi xuất hiện vật thể, step X: cách 20px về phương ngang thì xuất hiện vật thể kế tiếp, tương tự cho stepY
+        });
+      }
+    </script>
+  </body>
+</html>

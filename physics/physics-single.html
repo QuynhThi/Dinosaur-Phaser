@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+          arcade: {
+            debug: true, // true: hiện hướng vật thể di chuyển, false: không hiện
+            gravity: { y: 200 }, // trọng lực của vật thể, số càng to thì vật rơi xuống càng nhanh
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+      let star;
+
+      function preload() {
+        this.load.image("star", "../assets/star.png");
+      }
+
+      function create() {
+        star = this.physics.add
+          .image(400, 100, "star")
+          .setVelocity(100, 200) // vận tốc của vật thể x, y (theo phương ngang, theo phương dọc): số càng to thì vật thể chuyển động càng nhanh
+          .setBounce(1, 1) // độ nảy ra của vật thể x, y (theo phương ngang, theo phương dọc): số thực từ 0 đến 1
+          .setCollideWorldBounds(true); // true: khi vật thể va chạm sẽ có 1 độ nảy ra, false: không có hiện tượng nảy ra
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+        },
+      };
+
+      var game = new Phaser.Game(config);
+
+      function preload() {
+        this.load.atlas(
+          "megaset",
+          "../assets/particles/megaset.png",
+          "../assets/particles/megaset.json"
+        );
+      }
+
+      function create() {
+        this.add.particles("megaset", [
+          {
+            frame: "red_ball", // tên file khai báo trong file json megaset
+            x: 400, // tọa độ x khi vật thể xuất hiện
+            y: 200, // tọa độ y khi vật thể xuất hiện
+            angle: { min: 0, max: 360 }, // góc
+            speed: 200, // tốc độ
+            gravityY: 350, // trọng lực
+            lifespan: 3000, // khu vực tỏa ra của ball
+            quantity: 1, // 1 lần xuất hiện 1 ball
+            scale: { min: 0.1, max: 1 }, // mới xuất hiện, ball nhỏ đến to dần
+          },
+        ]);
+      }
+    </script>
+  </body>
+</html>

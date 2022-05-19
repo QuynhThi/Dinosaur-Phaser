@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        scene: {
+          preload: preload,
+          create: create,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+        },
+      };
+
+      var game = new Phaser.Game(config);
+      let fatBoy, fire;
+
+      function preload() {
+        // load sprites
+        this.load.spritesheet("fat", "../assets/fat-boy.png", {
+          frameWidth: 52,
+          frameHeight: 70,
+        });
+        this.load.spritesheet("fire", "../assets/fire.png", {
+          frameWidth: 64,
+          frameHeight: 64,
+        });
+      }
+
+      function create() {
+        // add sprites vào game
+        fatBoy = this.physics.add.sprite(200, 300, "fat").setOrigin(0, 0); // tọa độ x, y tính từ góc trên cùng bên trái màn hình
+
+        fire = this.physics.add.sprite(200, 300, "fire").setOrigin(0, 0); // tọa độ x, y tính từ góc trên cùng bên trái màn hình
+
+        // khai báo các trường hợp chuyển động của sprites
+        this.anims.create({
+          key: "explode",
+          frames: this.anims.generateFrameNumbers("fire", {
+            start: 0, // start 0, end 22 -> lấy từ hình thứ nhất đến hình thứ 23
+            end: 22,
+          }),
+          frameRate: 22, // 22 hình trong 1s
+          hideOnComplete: true, // ẩn sprites khi hoàn thành
+        });
+
+        this.anims.create({
+          key: "fatRun",
+          frames: this.anims.generateFrameNumbers("fat", {
+            start: 0, // start 0, end 5 -> lấy từ hình thứ nhất đến hình thứ 6
+            end: 5,
+          }),
+          frameRate: 18, // 18 hình trong 1s
+          repeat: -1, // không lặp lại
+        });
+
+        fatBoy.anims.play("fatRun", true);
+        fire.anims.play("explode", true);
+      }
+    </script>
+  </body>
+</html>
