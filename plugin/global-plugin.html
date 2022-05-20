@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: 200,
+        backgroundColor: "#888",
+        scene: {
+          preload: preload,
+          create: create,
+          extend: {
+            replaceText: replaceText, // khai báo plugin vào scene
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+
+      function preload() {}
+
+      function create() {
+        var text = "Quynh Thi test global plugin";
+
+        // gọi plugin để sử dụng
+        this.add.text(50, 50, replaceText(text), {
+          fontSize: "60px",
+          fill: "#000",
+        });
+      }
+
+      // plugin được khai báo như 1 function
+      function replaceText(text) {
+        return text.replace("Q", "2");
+      }
+    </script>
+  </body>
+</html>

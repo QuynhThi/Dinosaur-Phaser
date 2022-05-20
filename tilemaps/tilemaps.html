@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        pixelArt: true, // khai báo chỗ này để game lấy tilemaps
+        scene: {
+          preload: preload,
+          create: create,
+          update: update,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+      };
+
+      var game = new Phaser.Game(config);
+
+      function preload() {
+        // load file json
+        this.load.tilemapTiledJSON(
+          "map",
+          "../assets/tilemaps/super-mario.json"
+        );
+        this.load.image("tiles", "../assets/tilemaps/super-mario.png");
+      }
+
+      function create() {
+        // khai báo tilemap
+        var map = this.make.tilemap({ key: "map" });
+        // add hình tên SuperMarioBros-World1-1 đã được khai báo trong file json
+        var tileset = map.addTilesetImage("SuperMarioBros-World1-1", "tiles");
+        // tạo ra 1 lớp layer tên World1 đã được khai báo trong file json
+        var layer = map.createLayer("World1", tileset, 100, 200);
+
+        // kích thước layer
+        layer.width = 400;
+
+        var cursors = this.input.keyboard.createCursorKeys();
+
+        var controlConfig = {
+          camera: this.cameras.main,
+          left: cursors.left,
+          right: cursors.right,
+          speed: 0.5,
+        };
+
+        controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+        this.cameras.main.setBounds(0, 0, layer.x + layer.width, 0);
+      }
+
+      function update(time, delta) {
+        controls.update(delta);
+      }
+    </script>
+  </body>
+</html>

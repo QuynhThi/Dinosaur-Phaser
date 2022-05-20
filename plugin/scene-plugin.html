@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      // plugin được khai báo như 1 class
+      class TestPlugin extends Phaser.Plugins.ScenePlugin {
+        concatText(text) {
+          return text.concat("123");
+        }
+      }
+
+      var config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: 200,
+        backgroundColor: "#888",
+        scene: {
+          preload: preload,
+          create: create,
+        },
+      };
+
+      var game = new Phaser.Game(config);
+
+      function preload() {
+        // gọi plugin để sử dụng
+        this.load.scenePlugin({
+          key: "TestPlugin",
+          url: TestPlugin, // gọi plugin để sử dụng, có thể gọi trực tiếp hoặc thay thế bằng url
+          sceneKey: "test", // đặt tên scene sẽ sử dụng plugin
+        });
+      }
+
+      function create() {
+        var text = "Quynh Thi test scene plugin ";
+
+        // dùng this.test để sử dụng plugin
+        let newText = this.test.concatText(text);
+
+        this.add.text(50, 50, newText, {
+          fontSize: "60px",
+          fill: "#000",
+        });
+      }
+    </script>
+  </body>
+</html>

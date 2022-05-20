@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var config = {
+        type: Phaser.AUTO,
+        backgroundColor: "#888",
+        width: 800,
+        height: 600,
+        scene: {
+          preload: preload,
+          create: create,
+          update: update,
+        },
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+          default: "arcade",
+          arcade: {
+            gravity: { y: 300 },
+            debug: false,
+          },
+        },
+      };
+
+      var game = new Phaser.Game(config);
+      var keys, Q, U, Y, N, H, T, H1, I, isClick;
+
+      function preload() {}
+
+      function create() {
+        // tạo các text có màu khác nhau
+        Q = this.add.text(0, 250, "Q", {
+          font: "70px Courier",
+          fill: "#f1c6c7",
+        });
+        U = this.add.text(100, 250, "U", {
+          font: "70px Courier",
+          fill: "#c4deee",
+        });
+        Y = this.add.text(200, 250, "Y", {
+          font: "70px Courier",
+          fill: "#e6c5ee",
+        });
+        N = this.add.text(300, 250, "N", {
+          font: "70px Courier",
+          fill: "#00e8a8",
+        });
+        H = this.add.text(400, 250, "H", {
+          font: "70px Courier",
+          fill: "#ffb944",
+        });
+        T = this.add.text(500, 250, "T", {
+          font: "70px Courier",
+          fill: "#f1c6c7",
+        });
+        H1 = this.add.text(600, 250, "H", {
+          font: "70px Courier",
+          fill: "#c4deee",
+        });
+        I = this.add.text(700, 250, "I", {
+          font: "70px Courier",
+          fill: "#e6c5ee",
+        });
+
+        // nếu có sự kiện nhấn chuột thì isClick = true
+        this.input.on(
+          "pointerdown",
+          function (pointer) {
+            isClick = true;
+          },
+          this
+        );
+
+        // nếu có sự kiện thả chuột thì isClick = false
+        this.input.on(
+          "pointerup",
+          function (pointer) {
+            isClick = false;
+          },
+          this
+        );
+      }
+
+      function update() {
+        // nếu có sự kiện nhấn chuột thì viền của chữ sẽ đổi màu
+        Q.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        U.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        Y.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        N.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        H.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        T.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        H1.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+        I.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
+          2,
+          2,
+          "#333333",
+          2,
+          true,
+          true
+        );
+      }
+    </script>
+  </body>
+</html>

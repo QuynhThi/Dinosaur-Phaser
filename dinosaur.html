@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Making your first Phaser 3 Game - Part 10</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.50.0/dist/phaser.js"></script>
     <style type="text/css">
       body {
-        margin: 0;
+        margin: "auto";
+        border: "1px solid #ddd";
       }
     </style>
   </head>
@@ -15,9 +16,12 @@
       const phaserConfig = {
         type: Phaser.AUTO,
         parent: "game",
-        width: window.innerWidth,
-        height: window.innerHeight,
         backgroundColor: "#fff",
+        maxWidth: window.innerWidth < 450 ? window.innerWidth : 700,
+        height: 400,
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
         scene: {
           init: initScene,
           preload: preloadScene,
@@ -25,15 +29,16 @@
           update: updateScene,
         },
         physics: {
-          default: "arcade",
+          default: "arcade", // khai báo va chạm vật lý
           arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 300 }, // trọng lực 300
             debug: false,
           },
         },
       };
 
       var game = new Phaser.Game(phaserConfig);
+
       var cloudsSky,
         groundsScroll,
         player,
@@ -49,11 +54,12 @@
       var gameOver = false;
       var isStart = false;
       var isJump = false;
-      var firstJump = false;
       var prevTime = null;
-      var speed = 10;
+      var speed = 7;
       var score = 0;
       var count = 0;
+      var width = game.config.width;
+      var height = game.config.height;
 
       function initScene() {}
       function preloadScene() {
@@ -67,55 +73,56 @@
         this.load.image("google", "assets/googleChrome.png");
         this.load.image("reload", "assets/reload.png");
         this.load.spritesheet("dinosaur", "assets/dinosaur.png", {
-          frameWidth: 45,
-          frameHeight: 47,
+          frameWidth: 45, // chiều ngang của 1 khung hình nhỏ trong sprite
+          frameHeight: 47, // chiều dọc của 1 khung hình nhỏ trong sprite
         });
-        // this.load.spritesheet("dinosaur", "assets/01.png", {
-        //   frameWidth: 500,
-        //   frameHeight: 1000,
-        // });
       }
       function createScene() {
         // khai báo tileSprite để mây auto scroll ngang màn hình
         cloudsSky = this.add
-          .tileSprite(0, 0, innerWidth, 200, "cloud")
+          .tileSprite(0, 0, width, 150, "cloud") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
           .setOrigin(0, 0);
 
         // khai báo tileSprite để nền đất auto scroll ngang màn hình
         groundsScroll = this.add
-          .tileSprite(0, innerHeight - 300, innerWidth, 20, "ground")
+          .tileSprite(0, height - 20, width, 20, "ground") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
           .setOrigin(0, 0);
 
         // khai báo physics group để nhóm nhiều cây
         trees = this.physics.add.group();
+
         // để group cây chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(trees, groundsScroll);
 
         // khai báo physics group để nhóm nhiều ngôi sao
         stars = this.physics.add.group();
+
         // để group ngôi sao chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(stars, groundsScroll);
 
         // khai báo sprite để chân khủng long chạy
         player = this.physics.add
-          .sprite(200, innerHeight - 400, "dinosaur")
+          .sprite(100, height - 10, "dinosaur") //
           .setOrigin(0, 0) // tọa độ x, y tính từ góc trên cùng bên trái màn hình
-          .setCollideWorldBounds(true, 0, 0) // va chạm với body, tọa độ x, y (chưa hiểu lắm)
+          .setCollideWorldBounds(true, 0.2, 0.2) // va chạm với khung hình game, tọa độ x, y là độ nảy (số thập phân từ 0 đến 1)
           .setGravityY(5000); // trọng lực, số càng cao -> nhân vật lúc xuất hiện rơi xuống càng nhanh
 
-        // start -> khai báo chỗ này để khủng long và mặt đất chạm nhau mà không bị rớt xuống
+        // khủng long và nền đất được áp dụng va chạm vật lý arcade
         this.physics.world.enable(
           [player, groundsScroll],
           Phaser.Physics.ARCADE
         );
 
+        // nền đất không chuyển động
         groundsScroll.body.immovable = true;
+
+        // nền đất không có trọng lực -> không rơi ra khỏi khung hình
         groundsScroll.body.allowGravity = false;
 
+        // để khủng long chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(player, groundsScroll);
-        // end -> khai báo chỗ này để khủng long và mặt đất chạm nhau mà không bị rớt xuống
 
-        // khai báo anims để chân khủng long chuyển động
+        // khai báo animation để chân khủng long chuyển động
         this.anims.create({
           key: "run",
           frames: this.anims.generateFrameNumbers("dinosaur", {
@@ -144,24 +151,23 @@
 
         // khai báo hình có chữ game over
         gameOverText = this.add.image(
-          innerWidth / 2, // tọa độ x khi xuất hiện
-          innerHeight / 3, // tọa độ y khi xuất hiện
+          width / 2, // tọa độ x khi xuất hiện
+          height / 2, // tọa độ y khi xuất hiện
           "gameOverText" // đối tượng xuất hiện
         );
+
         // vừa vô game thì ẩn hình có chữ game over đi
         gameOverText.alpha = 0;
 
         // khai báo hình google chrome
-        googleChrome = this.add.image(
-          innerWidth / 2,
-          innerHeight / 3 + 50,
-          "google"
-        );
+        googleChrome = this.add.image(width / 2, height / 2 + 50, "google");
+
         // vừa vô game thì ẩn hình google chrome đi
         googleChrome.alpha = 0;
 
         // khai báo hình reload
-        reload = this.add.image(innerWidth / 2, innerHeight / 3 + 50, "reload");
+        reload = this.add.image(width / 2, height / 2 + 50, "reload");
+
         // vừa vô game thì ẩn hình reload đi
         reload.alpha = 0;
 
@@ -177,6 +183,7 @@
         // nếu khủng long nhảy qua cây chạm vào ngôi sao thì chạy hàm touchStar
         this.physics.add.overlap(player, stars, touchStar, null, this);
 
+        // khai báo input keyboard để nhận event nhập bàn phím
         cursors = this.input.keyboard.createCursorKeys();
       }
 
@@ -184,7 +191,8 @@
         // xóa ngôi sao vừa chạm
         star.disableBody(true, true);
 
-        // nếu khủng long đang thực hiện hành động nhảy và game đang start (nghĩa là tất cả hành động nhảy mà chạm vào ngôi sao của khủng long đều đc cộng 10 điểm. Trừ hành động nhảy đầu tiên khi bắt đầu game)
+        // nếu khủng long đang thực hiện hành động nhảy và game đang start
+        // (nghĩa là tất cả hành động nhảy mà chạm vào ngôi sao của khủng long đều đc cộng 10 điểm. Trừ hành động nhảy đầu tiên khi bắt đầu game)
         if (isJump && !gameOver) {
           score += 10;
           // hiện ra điểm mới
@@ -200,12 +208,13 @@
       }
 
       function jump() {
-        // nếu khủng long chưa chạm đất (tọa độ 626) thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
-        if (player.y !== 626) {
+        // nếu khủng long chưa chạm đất thì return. Chỗ này để ngăn user nhấn giữ nguyên space khiên khủng long bay lơ lửng
+        if (player.y !== groundsScroll.y - 27) {
           return;
         }
         // thay đổi tọa độ của khủng long, x = 0 -> khủng long khi nhảy vẫn đứng nguyên chỗ cũ, y = -1100 -> nhảy khỏi mặt đất 1100
         player.setVelocity(0, -1100);
+        player.body.offset.y = -20;
 
         // bắt đầu hành động nhảy
         isJump = true;
@@ -213,20 +222,22 @@
 
       function renderTree() {
         const randomNum = Math.floor(Math.random() * 3) + 1;
-        const distance = Phaser.Math.Between(600, 1000);
+        const distance = Phaser.Math.Between(600, 900);
         let obsticle, obsticleStar;
 
         // khai báo cây
         obsticle = trees
-          .create(player.x + distance, player.y, `tree${randomNum}`)
+          .create(player.x + distance, player.y - 35, `tree${randomNum}`)
           .setOrigin(0, 0)
-          .setGravityY(10000);
+          .setGravityY(1000);
+
+        obsticle.body.offset.y = -20;
 
         // khai báo ngôi sao
         obsticleStar = stars
-          .create(player.x + distance, player.y - 200, `star`)
+          .create(player.x + distance, player.y - 150, `star`)
           .setOrigin(0, 0)
-          .setGravityY(10000);
+          .setGravityY(1000);
 
         // giúp ngôi sao nằm phía trên cây
         obsticleStar.body.height = obsticleStar.body.height / 0.15;
@@ -255,15 +266,20 @@
           count += 1;
           // 5s sau khi game over mới có thể chơi lại
           if (count >= 50) {
+            speed = 7;
             // ẩn hình google chrome
             googleChrome.alpha = 0;
             // hiện hình reload
             reload.alpha = 1;
             // nhấn mũi tên lên hoặc space để chơi lại từ đầu
             if ((cursors.space.isDown || cursors.up.isDown) && !isStart) {
+              // reset điểm
+              score = -10;
+              scoreText.setText("Score: " + 0);
+
               gameOver = false;
               isStart = true;
-              firstJump = true;
+              isJump = false;
 
               trees.getChildren().forEach((obsticle) => {
                 // khác nhau giữa remove (xóa 1 phần tử trong group), clear (xóa tất cả phần tử trong group), destroy (giống clear + ngắt kết nối group với scene )
@@ -273,9 +289,6 @@
               // lại ẩn hình reload
               reload.alpha = 0;
               gameOverText.alpha = 0;
-
-              // reset điểm
-              score = -10;
             } else {
               return;
             }
