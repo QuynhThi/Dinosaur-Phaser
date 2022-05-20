@@ -46,21 +46,24 @@
         sky = this.add.image(0, 0, "sky");
         boy = this.add.image(100, 100, "boy");
 
-        this.cameras.main.setViewport(5, 5, 390, 290);
+        this.cameras.main.setViewport(5, 5, 390, 290); // tọa độ x, y khi xuất hiện của camera, width, height của camera
 
-        this.fadeCamera = this.cameras.add(405, 5, 390, 290);
-        this.flashCamera = this.cameras.add(5, 305, 390, 290);
-        this.shakeCamera = this.cameras.add(405, 305, 390, 290);
+        this.fadeCamera = this.cameras.add(405, 5, 390, 290); // tọa độ x, y khi xuất hiện của camera, width, height của camera
+        this.flashCamera = this.cameras.add(5, 305, 390, 290); // tọa độ x, y khi xuất hiện của camera, width, height của camera
+        this.shakeCamera = this.cameras.add(405, 305, 390, 290); // tọa độ x, y khi xuất hiện của camera, width, height của camera
 
+        // khai báo thuộc tính mờ dần trong 2s
         this.fadeCamera.fade(2000);
 
+        // khai báo thuộc tính rung trong 1s
         this.flashCamera.flash(1000);
+
+        // khai báo thuộc tính lắc trong 1s với cường độ 0.025
+        this.shakeCamera.shake(5000, 0.025);
       }
 
       function update() {
-        // flashCamera.flash(750);
-        this.shakeCamera.shake(1000, 0.025);
-
+        // để thuộc tính mờ dần diễn ra liên tục
         if (this.fadeCamera.fadeEffect.alpha >= 1) {
           this.fadeCamera.fadeEffect.alpha = 0;
           this.fadeCamera.fade(2000);

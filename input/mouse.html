@@ -40,8 +40,7 @@
       function preload() {}
 
       function create() {
-        keys = this.input.keyboard.addKeys("Q,U,Y,N,H,T,I");
-
+        // tạo các text có màu khác nhau
         Q = this.add.text(0, 250, "Q", {
           font: "70px Courier",
           fill: "#f1c6c7",
@@ -75,6 +74,7 @@
           fill: "#e6c5ee",
         });
 
+        // nếu có sự kiện nhấn chuột thì isClick = true
         this.input.on(
           "pointerdown",
           function (pointer) {
@@ -83,6 +83,7 @@
           this
         );
 
+        // nếu có sự kiện thả chuột thì isClick = false
         this.input.on(
           "pointerup",
           function (pointer) {
@@ -93,6 +94,7 @@
       }
 
       function update() {
+        // nếu có sự kiện nhấn chuột thì viền của chữ sẽ đổi màu
         Q.setStroke(isClick ? "#de77ae" : "#fff", 20).setShadow(
           2,
           2,

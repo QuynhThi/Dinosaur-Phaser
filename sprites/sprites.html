@@ -25,7 +25,7 @@
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
         physics: {
-          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+          default: "arcade",
         },
       };
 
@@ -71,6 +71,7 @@
           repeat: -1, // không lặp lại
         });
 
+        // gọi các animation đã khai báo
         fatBoy.anims.play("fatRun", true);
         fire.anims.play("explode", true);
       }

@@ -31,6 +31,7 @@
       var game = new Phaser.Game(config);
 
       function preload() {
+        // load file json
         this.load.tilemapTiledJSON(
           "map",
           "../assets/tilemaps/super-mario.json"
@@ -39,11 +40,14 @@
       }
 
       function create() {
+        // khai báo tilemap
         var map = this.make.tilemap({ key: "map" });
+        // add hình tên SuperMarioBros-World1-1 đã được khai báo trong file json
         var tileset = map.addTilesetImage("SuperMarioBros-World1-1", "tiles");
+        // tạo ra 1 lớp layer tên World1 đã được khai báo trong file json
         var layer = map.createLayer("World1", tileset, 100, 200);
 
-        // Map size
+        // kích thước layer
         layer.width = 400;
 
         var cursors = this.input.keyboard.createCursorKeys();

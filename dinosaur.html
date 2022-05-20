@@ -29,9 +29,9 @@
           update: updateScene,
         },
         physics: {
-          default: "arcade",
+          default: "arcade", // khai báo va chạm vật lý
           arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 300 }, // trọng lực 300
             debug: false,
           },
         },
@@ -73,18 +73,14 @@
         this.load.image("google", "assets/googleChrome.png");
         this.load.image("reload", "assets/reload.png");
         this.load.spritesheet("dinosaur", "assets/dinosaur.png", {
-          frameWidth: 45,
-          frameHeight: 47,
+          frameWidth: 45, // chiều ngang của 1 khung hình nhỏ trong sprite
+          frameHeight: 47, // chiều dọc của 1 khung hình nhỏ trong sprite
         });
-        // this.load.spritesheet("dinosaur", "assets/01.png", {
-        //   frameWidth: 500,
-        //   frameHeight: 1000,
-        // });
       }
       function createScene() {
         // khai báo tileSprite để mây auto scroll ngang màn hình
         cloudsSky = this.add
-          .tileSprite(0, 0, width, 150, "cloud")
+          .tileSprite(0, 0, width, 150, "cloud") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
           .setOrigin(0, 0);
 
         // khai báo tileSprite để nền đất auto scroll ngang màn hình
@@ -94,34 +90,39 @@
 
         // khai báo physics group để nhóm nhiều cây
         trees = this.physics.add.group();
+
         // để group cây chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(trees, groundsScroll);
 
         // khai báo physics group để nhóm nhiều ngôi sao
         stars = this.physics.add.group();
+
         // để group ngôi sao chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(stars, groundsScroll);
 
         // khai báo sprite để chân khủng long chạy
         player = this.physics.add
-          .sprite(100, height - 10, "dinosaur")
+          .sprite(100, height - 10, "dinosaur") //
           .setOrigin(0, 0) // tọa độ x, y tính từ góc trên cùng bên trái màn hình
-          .setCollideWorldBounds(true, 0, 0) // va chạm với body, tọa độ x, y (chưa hiểu lắm)
+          .setCollideWorldBounds(true, 0.2, 0.2) // va chạm với khung hình game, tọa độ x, y là độ nảy (số thập phân từ 0 đến 1)
           .setGravityY(5000); // trọng lực, số càng cao -> nhân vật lúc xuất hiện rơi xuống càng nhanh
 
-        // start -> khai báo chỗ này để khủng long và mặt đất chạm nhau mà không bị rớt xuống
+        // khủng long và nền đất được áp dụng va chạm vật lý arcade
         this.physics.world.enable(
           [player, groundsScroll],
           Phaser.Physics.ARCADE
         );
 
+        // nền đất không chuyển động
         groundsScroll.body.immovable = true;
+
+        // nền đất không có trọng lực -> không rơi ra khỏi khung hình
         groundsScroll.body.allowGravity = false;
 
+        // để khủng long chạm mặt đất mà không bị rớt xuống
         this.physics.add.collider(player, groundsScroll);
-        // end -> khai báo chỗ này để khủng long và mặt đất chạm nhau mà không bị rớt xuống
 
-        // khai báo anims để chân khủng long chuyển động
+        // khai báo animation để chân khủng long chuyển động
         this.anims.create({
           key: "run",
           frames: this.anims.generateFrameNumbers("dinosaur", {
@@ -154,16 +155,19 @@
           height / 2, // tọa độ y khi xuất hiện
           "gameOverText" // đối tượng xuất hiện
         );
+
         // vừa vô game thì ẩn hình có chữ game over đi
         gameOverText.alpha = 0;
 
         // khai báo hình google chrome
         googleChrome = this.add.image(width / 2, height / 2 + 50, "google");
+
         // vừa vô game thì ẩn hình google chrome đi
         googleChrome.alpha = 0;
 
         // khai báo hình reload
         reload = this.add.image(width / 2, height / 2 + 50, "reload");
+
         // vừa vô game thì ẩn hình reload đi
         reload.alpha = 0;
 
@@ -179,6 +183,7 @@
         // nếu khủng long nhảy qua cây chạm vào ngôi sao thì chạy hàm touchStar
         this.physics.add.overlap(player, stars, touchStar, null, this);
 
+        // khai báo input keyboard để nhận event nhập bàn phím
         cursors = this.input.keyboard.createCursorKeys();
       }
 
@@ -186,7 +191,8 @@
         // xóa ngôi sao vừa chạm
         star.disableBody(true, true);
 
-        // nếu khủng long đang thực hiện hành động nhảy và game đang start (nghĩa là tất cả hành động nhảy mà chạm vào ngôi sao của khủng long đều đc cộng 10 điểm. Trừ hành động nhảy đầu tiên khi bắt đầu game)
+        // nếu khủng long đang thực hiện hành động nhảy và game đang start
+        // (nghĩa là tất cả hành động nhảy mà chạm vào ngôi sao của khủng long đều đc cộng 10 điểm. Trừ hành động nhảy đầu tiên khi bắt đầu game)
         if (isJump && !gameOver) {
           score += 10;
           // hiện ra điểm mới

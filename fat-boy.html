@@ -28,9 +28,9 @@
           update: updateScene,
         },
         physics: {
-          default: "arcade",
+          default: "arcade", // khai báo va chạm vật lý loại arcade
           arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 300 }, // trọng lực 300
             debug: false,
           },
         },
@@ -82,8 +82,8 @@
         this.load.image("boy", "assets/win-boy.png");
         this.load.image("fence", "assets/fence.png");
         this.load.spritesheet("thin", "assets/thin-boy.png", {
-          frameWidth: 52,
-          frameHeight: 70,
+          frameWidth: 52, // kích thước ngang của 1 hình nhỏ trong sprite
+          frameHeight: 70, // kích thước dọc của 1 hình nhỏ trong sprite
         });
         this.load.spritesheet("normal", "assets/normal-boy.png", {
           frameWidth: 52,
@@ -96,24 +96,23 @@
         this.load.spritesheet("boom", "assets/fire.png", {
           frameWidth: 64,
           frameHeight: 64,
-          // endFrame: 23,
         });
       }
       function createScene() {
         // khai báo tileSprite để nền đất auto scroll ngang màn hình
         groundsScrollTop = this.add
           .tileSprite(0, 20, width, 20, "ground") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
-          .setOrigin(0, 0);
+          .setOrigin(0, 0); // tính từ góc trên cùng bên trái của màn hình
 
         groundsScrollBottom = this.add
-          .tileSprite(width, height - 20, width, 20, "ground") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
+          .tileSprite(width, height - 20, width, 20, "ground")
           .setOrigin(0, 0)
-          .setAngle(-180);
+          .setAngle(-180); // xoay góc của groundsScrollBottom
 
         player = this.physics.add
           .sprite(100, 180, "normal")
-          .setOrigin(0, 0) // tọa độ x, y tính từ góc trên cùng bên trái màn hình
-          .setCollideWorldBounds(true, 0, 0) // va chạm với body, tọa độ x, y (chưa hiểu lắm)
+          .setOrigin(0, 0)
+          .setCollideWorldBounds(true, 0.2, 0.2) // va chạm với khung hình, tọa độ x, y (độ nảy là số thập phân từ 0 đến 1)
           .setGravityY(5000); // trọng lực, số càng cao -> nhân vật lúc xuất hiện rơi xuống càng nhanh
 
         player.body.height = middleHeight;
@@ -129,24 +128,29 @@
           height / 2, // tọa độ y khi xuất hiện
           "gameOverText" // đối tượng xuất hiện
         );
+
         // vừa vô game thì ẩn hình có chữ game over đi
         gameOverText.alpha = 0;
 
         // khai báo hình google chrome
         googleChrome = this.add.image(width / 2, height / 2 + 60, "google");
+
         // vừa vô game thì ẩn hình google chrome đi
         googleChrome.alpha = 0;
 
         // khai báo hình reload
         reload = this.add.image(width / 2, height / 2 + 60, "reload");
+
         // vừa vô game thì ẩn hình reload đi
         reload.alpha = 0;
 
+        // khai báo điểm = 0 khi vừa vô game
         scoreText = this.add.text(width - 130, 8, "Score: 0", {
           fontSize: "20px",
           fill: "#000",
         });
 
+        // ẩn điểm cho đến khi game bắt đầu
         scoreText.alpha = 0;
 
         this.anims.create({
@@ -157,42 +161,41 @@
 
         this.anims.create({
           key: "explode",
-          // frames: "boom",
           frames: this.anims.generateFrameNumbers("boom", {
-            start: 0, // dinosaur là 1 sprite gồm nhiều hình, start 0, end 1 -> lấy từ hình thứ nhất đến hình thứ 2
+            start: 0, // boom là 1 sprite gồm nhiều hình, start 0, end 22 -> lấy từ hình thứ nhất đến hình thứ 23
             end: 22,
           }),
-          frameRate: 22, // 10 hình trong 1s
-          hideOnComplete: true,
+          frameRate: 22, // 22 hình trong 1s
+          hideOnComplete: true, // ẩn khi sprite chạy xong
         });
 
         this.anims.create({
           key: "thinRun",
           frames: this.anims.generateFrameNumbers("thin", {
-            start: 0, // dinosaur là 1 sprite gồm nhiều hình, start 0, end 1 -> lấy từ hình thứ nhất đến hình thứ 2
+            start: 0,
             end: 5,
           }),
-          frameRate: 18, // 10 hình trong 1s
+          frameRate: 18,
           repeat: -1, // không lặp lại
         });
 
         this.anims.create({
           key: "normalRun",
           frames: this.anims.generateFrameNumbers("normal", {
-            start: 0, // dinosaur là 1 sprite gồm nhiều hình, start 0, end 1 -> lấy từ hình thứ nhất đến hình thứ 2
+            start: 0,
             end: 5,
           }),
-          frameRate: 18, // 10 hình trong 1s
+          frameRate: 18,
           repeat: -1, // không lặp lại
         });
 
         this.anims.create({
           key: "fatRun",
           frames: this.anims.generateFrameNumbers("fat", {
-            start: 0, // dinosaur là 1 sprite gồm nhiều hình, start 0, end 1 -> lấy từ hình thứ nhất đến hình thứ 2
+            start: 0,
             end: 5,
           }),
-          frameRate: 18, // 10 hình trong 1s
+          frameRate: 18,
           repeat: -1, // không lặp lại
         });
 
@@ -210,11 +213,14 @@
           "boy" // đối tượng xuất hiện
         );
 
+        // khai báo vạch kẻ đường trên
         laneDisplayTop = this.add
+          // xuất hiện theo dạng lưới
+          // (tọa độ x khi xuất hiện, tọa độ y khi xuất hiện, độ dài của grid, chiều cao của grid, chiều dài của 1 thành phần, chiều cao của 1 thành phần, màu sắc)
           .grid(0, 120, width * 1000, 5, 50, 5, 0xbfbfbf)
-          .setAltFillStyle(0xf8f8f8)
-          .setOutlineStyle()
-          .setDepth(-1);
+          .setAltFillStyle(0xf8f8f8) // màu của khoảng cách giữa các thành phần
+          .setOutlineStyle() // phương thức được gọi mà không đưa giá trị vào sẽ không hiển thị dạng lưới
+          .setDepth(-1); // thuộc tính này giúp line nằm dưới các đối tượng khác, tương tự như thuộc tính z-index
 
         laneDisplayBottom = this.add
           .grid(10, 220, width * 1000, 5, 50, 5, 0xbfbfbf)
@@ -222,6 +228,7 @@
           .setOutlineStyle()
           .setDepth(-1);
 
+        // vừa vô game ẩn vạch kẻ đường
         laneDisplayTop.alpha = 0;
         laneDisplayBottom.alpha = 0;
 
@@ -246,7 +253,9 @@
           gameOverText.alpha = 1;
           // hiện ra hình google chrome
           googleChrome.alpha = 1;
+          // ẩn player
           player.alpha = 0;
+
           goodObjects.getChildren().forEach((obsticle) => {
             // khác nhau giữa remove (xóa 1 phần tử trong group), clear (xóa tất cả phần tử trong group), destroy (giống clear + ngắt kết nối group với scene )
             goodObjects.clear(obsticle);
@@ -281,6 +290,7 @@
             player1 && player1.anims.play("turn", true);
             player1 = undefined;
           }
+
           score += 10;
           scoreText.setText("Score: " + score);
         }
@@ -371,16 +381,15 @@
             // nhấn mũi tên lên hoặc space để chơi lại từ đầu
             if (cursors.space.isDown && !isStart) {
               // reset điểm
-              score = -10;
-              scoreText.setText("Score: " + 0);
+              score = 0;
+
+              scoreText.x = width - 130;
+              scoreText.y = 8;
+              scoreText.scale = 1;
+              scoreText.text = `Score: 0`;
 
               gameOver = false;
               isStart = true;
-
-              // trees.getChildren().forEach((obsticle) => {
-              //   // khác nhau giữa remove (xóa 1 phần tử trong group), clear (xóa tất cả phần tử trong group), destroy (giống clear + ngắt kết nối group với scene )
-              //   trees.clear(obsticle);
-              // });
 
               // lại ẩn hình reload
               reload.alpha = 0;
@@ -402,6 +411,7 @@
           laneDisplayTop.setAlpha(1);
           laneDisplayBottom.setAlpha(1);
 
+          // chỗ này giúp vạch kẻ đường chuyển động theo khung hình
           this.tweens.add({
             targets: laneDisplayTop,
             x: `-=${speed * 60}`,
@@ -416,12 +426,6 @@
 
           player.alpha = 1;
 
-          Phaser.Actions.RotateAroundDistance(scoreText, player, 0.1, 100);
-
-          scoreText.x = width - 130;
-          scoreText.y = 8;
-          scoreText.text = `Score: 0`;
-
           if (score === 0) {
             if (
               score === 0 &&
@@ -430,7 +434,7 @@
             ) {
               player1 = this.physics.add
                 .sprite(player.x, player.y, "boom")
-                .setOrigin(0, 0); // tọa độ x, y tính từ góc trên cùng bên trái màn hình
+                .setOrigin(0, 0);
               player1.anims.play("explode", true);
             }
             player.anims.play("normalRun", true);
@@ -444,7 +448,7 @@
             ) {
               player1 = this.physics.add
                 .sprite(player.x, player.y, "boom")
-                .setOrigin(0, 0); // tọa độ x, y tính từ góc trên cùng bên trái màn hình
+                .setOrigin(0, 0);
               player1.anims.play("explode", true);
             }
             player.anims.play("thinRun", true);
@@ -458,7 +462,7 @@
             ) {
               player1 = this.physics.add
                 .sprite(player.x, player.y, "boom")
-                .setOrigin(0, 0); // tọa độ x, y tính từ góc trên cùng bên trái màn hình
+                .setOrigin(0, 0);
               player1.anims.play("explode", true);
             }
             player.anims.play("fatRun", true);

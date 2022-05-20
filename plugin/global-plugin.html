@@ -21,7 +21,7 @@
           preload: preload,
           create: create,
           extend: {
-            replaceText: replaceText,
+            replaceText: replaceText, // khai báo plugin vào scene
           },
         },
       };
@@ -33,12 +33,14 @@
       function create() {
         var text = "Quynh Thi test global plugin";
 
+        // gọi plugin để sử dụng
         this.add.text(50, 50, replaceText(text), {
           fontSize: "60px",
           fill: "#000",
         });
       }
 
+      // plugin được khai báo như 1 function
       function replaceText(text) {
         return text.replace("Q", "2");
       }

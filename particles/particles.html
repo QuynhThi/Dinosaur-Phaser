@@ -25,13 +25,14 @@
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
         physics: {
-          default: "arcade", // loại va chạm vật lý đơn giản nhất, dành cho người mới bắt đầu
+          default: "arcade",
         },
       };
 
       var game = new Phaser.Game(config);
 
       function preload() {
+        // load hình ảnh và file json
         this.load.atlas(
           "megaset",
           "../assets/particles/megaset.png",

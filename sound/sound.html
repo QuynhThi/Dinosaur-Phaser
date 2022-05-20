@@ -36,6 +36,7 @@
       var game = new Phaser.Game(config);
 
       function preload() {
+        // khai báo folder chứa các file âm thanh
         this.load.setPath("../assets/audio");
 
         this.load.audio("bass", ["bass.ogg", "bass.mp3"]);
@@ -48,6 +49,7 @@
       }
 
       function create() {
+        // add âm thanh vào game
         var bass = this.sound.add("bass");
         var drums = this.sound.add("drums");
         var percussion = this.sound.add("percussion");
@@ -81,6 +83,7 @@
           });
         }
 
+        // nhấn các nút tương ứng để bắt đầu âm thanh
         this.input.keyboard.on(
           "keydown-SPACE",
           function () {

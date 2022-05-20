@@ -40,8 +40,10 @@
       function preload() {}
 
       function create() {
+        // khai báo các key trong bàn phím
         keys = this.input.keyboard.addKeys("Q,U,Y,N,H,T,I");
 
+        // tạo các text có màu khác nhau
         Q = this.add.text(0, 250, "Q", {
           font: "70px Courier",
           fill: "#f1c6c7",
@@ -77,6 +79,7 @@
       }
 
       function update() {
+        // nếu có sự kiện nhấn keyboard thì viền của chữ sẽ đổi màu
         Q.setStroke(keys.Q.isDown ? "#de77ae" : "#fff", 20).setShadow(
           2,
           2,
