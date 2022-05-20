@@ -54,7 +54,8 @@
         fenceObjects,
         laneDisplayTop,
         laneDisplayBottom,
-        star;
+        star,
+        drums;
       var gameOver = false;
       var isStart = false;
       var prevTime = null;
@@ -97,8 +98,14 @@
           frameWidth: 64,
           frameHeight: 64,
         });
+        // khai báo folder chứa các file âm thanh phía dưới cùng, không thôi sẽ bị lỗi
+        this.load.setPath("assets/audio");
+        this.load.audio("drums", ["drums.ogg", "drums.mp3"]);
       }
       function createScene() {
+        // add âm thanh vô game
+        drums = this.sound.add("drums");
+
         // khai báo tileSprite để nền đất auto scroll ngang màn hình
         groundsScrollTop = this.add
           .tileSprite(0, 20, width, 20, "ground") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
@@ -245,6 +252,11 @@
           (fenceObject.y === 150 && player.body.height === middleHeight) ||
           (fenceObject.y === 250 && player.body.height === bottomHeight)
         ) {
+          if (!gameOver) {
+            // khai báo thuộc tính lắc trong 0.2s với cường độ 0.025
+            this.cameras.main.shake(200, 0.025);
+            drums.pause();
+          }
           // ngưng game
           gameOver = true;
           // mặt đất và mây ngừng scroll
@@ -403,6 +415,10 @@
         }
 
         if (isStart) {
+          if (!drums.isPlaying) {
+            drums.play();
+          }
+
           count = 0;
 
           groundsScrollTop.tilePositionX += speed;

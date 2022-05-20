@@ -50,7 +50,8 @@
         scoreText,
         stars,
         googleChrome,
-        reload;
+        reload,
+        drums;
       var gameOver = false;
       var isStart = false;
       var isJump = false;
@@ -73,11 +74,18 @@
         this.load.image("google", "assets/googleChrome.png");
         this.load.image("reload", "assets/reload.png");
         this.load.spritesheet("dinosaur", "assets/dinosaur.png", {
-          frameWidth: 45, // chiều ngang của 1 khung hình nhỏ trong sprite
+          frameWidth: 42, // chiều ngang của 1 khung hình nhỏ trong sprite
           frameHeight: 47, // chiều dọc của 1 khung hình nhỏ trong sprite
         });
+
+        // khai báo folder chứa các file âm thanh phía dưới cùng, không thôi sẽ bị lỗi
+        this.load.setPath("assets/audio");
+        this.load.audio("drums", ["drums.ogg", "drums.mp3"]);
       }
       function createScene() {
+        // add âm thanh vô game
+        drums = this.sound.add("drums");
+
         // khai báo tileSprite để mây auto scroll ngang màn hình
         cloudsSky = this.add
           .tileSprite(0, 0, width, 150, "cloud") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
@@ -249,6 +257,11 @@
       }
 
       function endGame() {
+        if (!gameOver) {
+          // khai báo thuộc tính lắc trong 0.2s với cường độ 0.025
+          this.cameras.main.shake(200, 0.025);
+          drums.pause();
+        }
         // ngưng game
         gameOver = true;
         // mặt đất và mây ngừng scroll
@@ -320,6 +333,9 @@
         }
 
         if (isStart) {
+          if (!drums.isPlaying) {
+            drums.play();
+          }
           // tốc độ scroll ngang màn hình của mây và nền đất
           cloudsSky.tilePositionX += speed - 2;
           groundsScroll.tilePositionX += speed;
