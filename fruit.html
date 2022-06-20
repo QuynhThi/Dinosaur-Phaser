@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 10</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.50.0/dist/phaser.js"></script>
+    <style type="text/css">
+      body {
+        margin: "auto";
+        border: "1px solid #ddd";
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      const phaserConfig = {
+        type: Phaser.AUTO,
+        parent: "game",
+        backgroundColor: "#ffe9a2",
+        width: 400,
+        height: 700,
+        scale: {
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        scene: {
+          init: initScene,
+          preload: preloadScene,
+          create: createScene,
+          update: updateScene,
+        },
+        physics: {
+          // default: "arcade", // khai báo va chạm vật lý
+          // arcade: {
+          //   gravity: { y: 300 }, // trọng lực 300
+          //   debug: true,
+          // },
+          matter: {
+            gravity: { y: 300 },
+          },
+        },
+      };
+
+      var game = new Phaser.Game(phaserConfig);
+
+      var groundsScroll,
+        cursors,
+        gameOverText,
+        scoreText,
+        r1,
+        startText,
+        fruitsArr,
+        newFruit;
+      var _this;
+      var isStart = false;
+      var score = 0;
+      var randomMax = 1;
+      var width = game.config.width;
+      var height = game.config.height;
+      var target = new Phaser.Math.Vector2();
+      var abc = false;
+      var initFruits = [
+        {
+          name: "f1",
+          r: 14,
+          color: "0x9d307e",
+        },
+        {
+          name: "f2",
+          r: 16,
+          color: "0xff0131",
+        },
+        {
+          name: "f3",
+          r: 18,
+          color: "0xff6f25",
+        },
+        {
+          name: "f4",
+          r: 20,
+          color: "0xffe73e",
+        },
+      ];
+
+      function initScene() {}
+      function preloadScene() {
+        this.load.image("ground", "assets/platform.png");
+        this.load.image("tree1", "assets/tree1.png");
+        this.load.image("tree2", "assets/tree2.png");
+        this.load.image("tree3", "assets/tree3.png");
+        this.load.image("gameOverText", "assets/gameover.png");
+        this.load.image("star", "assets/star.png");
+        this.load.image("google", "assets/googleChrome.png");
+        this.load.image("reload", "assets/reload.png");
+        this.load.spritesheet("dinosaur", "assets/dinosaur.png", {
+          frameWidth: 42, // chiều ngang của 1 khung hình nhỏ trong sprite
+          frameHeight: 47, // chiều dọc của 1 khung hình nhỏ trong sprite
+        });
+
+        // khai báo folder chứa các file âm thanh phía dưới cùng, không thôi sẽ bị lỗi
+        this.load.setPath("assets/audio");
+        this.load.audio("drums", ["drums.ogg", "drums.mp3"]);
+      }
+      function createScene() {
+        _this = this;
+        // add âm thanh vô game
+        drums = this.sound.add("drums");
+
+        groundsScroll = this.add
+          .tileSprite(0, height - 20, width, 20, "ground") // tọa độ x,y khi xuất hiện, width, height của đối tượng, tên đối tượng
+          .setOrigin(0, 0);
+
+        scoreText = this.add.text(16, 16, "Score: 0", {
+          fontSize: "16px",
+          fill: "#000",
+        });
+
+        randomFruits();
+
+        fruitsArr = this.add.group();
+        // fruitsArr = this.add.group({
+        //   key: "fruitsArr",
+        //   quantity: 0,
+        //   bounceX: 1, // độ nảy ra của vật thể x, y (theo phương ngang, theo phương dọc): số thực từ 0 đến 1
+        //   bounceY: 1, // độ nảy ra của vật thể x, y (theo phương ngang, theo phương dọc): số thực từ 0 đến 1
+        //   collideWorldBounds: true, // true: khi vật thể va chạm sẽ có 1 độ nảy ra, false: không có hiện tượng nảy ra
+        //   velocityX: 0, // vận tốc của vật thể x, y (theo phương ngang, theo phương dọc): số càng to thì vật thể chuyển động càng nhanh
+        //   velocityY: 150,
+        // });
+
+        startText = this.add.text(width / 2 - 50, height / 2 - 50, "Start", {
+          fontSize: "32px",
+          fill: "#000",
+        });
+
+        startText.setInteractive();
+
+        startText.on(
+          "pointerup",
+          function () {
+            startText.alpha = 0;
+
+            this.input.on(
+              "pointerdown",
+              function (pointer) {
+                let r1Width = r1.width / 2;
+                let downX = pointer?.downX;
+                if (pointer?.downX < r1Width) {
+                  downX = r1Width + 1;
+                }
+                if (pointer?.downX > width - r1Width) {
+                  downX = width - r1Width - 1;
+                }
+                downFruit(downX);
+              },
+              this
+            );
+          },
+          this
+        );
+
+        _this.physics.add.collider(fruitsArr, groundsScroll);
+      }
+
+      function touchFruits(r1Obj, fruitsArrObj) {
+        if (r1Obj?.width === fruitsArrObj?.width) {
+          let index = initFruits.findIndex(
+            (item) => item.r === r1Obj.width / 2
+          );
+
+          if (index !== -1 && index < initFruits?.length - 1) {
+            r1Obj.destroy();
+            fruitsArrObj.destroy();
+
+            newFruit = _this.add.circle(
+              fruitsArrObj.x,
+              fruitsArrObj.y,
+              initFruits[index + 1]?.r,
+              initFruits[index + 1]?.color
+            );
+            newFruit.setStrokeStyle(1, 0x000000);
+            fruitsArr.add(newFruit);
+
+            if (randomMax < initFruits?.length) {
+              randomMax = randomMax + 1;
+            }
+
+            _this.physics.world.enable(
+              [newFruit, fruitsArr],
+              Phaser.Physics.ARCADE
+            );
+
+            newFruit.body.allowGravity = true;
+
+            _this.physics.add.collider(newFruit, fruitsArr);
+
+            // newFruit.setRotation(20);
+          }
+        }
+        abc = true;
+      }
+
+      function downFruit(downX) {
+        _this.physics.world.enable([r1, groundsScroll], Phaser.Physics.ARCADE);
+
+        groundsScroll.body.immovable = true;
+
+        groundsScroll.body.allowGravity = false;
+
+        target.x = downX;
+        target.y = 40;
+        _this.physics.moveToObject(r1, target, 500);
+
+        r1.body.allowGravity = false;
+
+        _this.physics.add.collider(r1, groundsScroll);
+
+        // fruitsArr.add(r1);
+      }
+
+      function randomFruits() {
+        const randomNum = Math.floor(Math.random() * randomMax);
+
+        r1 = _this.add.circle(
+          (width - initFruits[randomNum]?.r) / 2,
+          40,
+          initFruits[randomNum]?.r,
+          initFruits[randomNum]?.color
+        );
+        r1.setStrokeStyle(1, 0x000000);
+        const body = _this.matter.add.circle(
+          (width - initFruits[randomNum]?.r) / 2,
+          40,
+          initFruits[randomNum]?.r
+        );
+        _this.matter.add.gameObject(r1, body);
+        // r1.body.setCircle(45);
+
+        r1.setBody({
+          type: "circle",
+          radius: 45,
+        });
+      }
+
+      function updateScene(time, delta) {
+        if (newFruit) {
+          // this.tweens.add({
+          //   targets: newFruit,
+          //   props: {
+          //     x: {
+          //       value: function () {
+          //         return width - newFruit.width / 2;
+          //       },
+          //       ease: "Sine.easeIn",
+          //     },
+          //   },
+          //   duration: 500,
+          //   yoyo: false,
+          //   repeat: -1,
+          // });
+        }
+
+        this.physics.add.overlap(r1, fruitsArr, touchFruits, null, this);
+
+        fruitsArr.getChildren().forEach((item) => {
+          this.physics.add.overlap(item, fruitsArr, touchFruits, null, this);
+        });
+
+        if (startText.alpha === 0 && r1.body) {
+          var distance = Phaser.Math.Distance.Between(
+            r1.x,
+            r1.y,
+            target.x,
+            target.y
+          );
+
+          if (r1.body.speed > 0) {
+            //  4 is our distance tolerance, i.e. how close the source can get to the target
+            //  before it is considered as being there. The faster it moves, the more tolerance is required.
+            if (distance < 4) {
+              r1.body.reset(target.x, target.y);
+
+              target.x = r1.x;
+              target.y = height - 20;
+              _this.physics.moveToObject(r1, target, 500);
+
+              fruitsArr.add(r1);
+              randomFruits();
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
