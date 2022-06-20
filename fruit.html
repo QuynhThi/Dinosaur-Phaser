@@ -29,14 +29,14 @@
           update: updateScene,
         },
         physics: {
-          // default: "arcade", // khai báo va chạm vật lý
-          // arcade: {
-          //   gravity: { y: 300 }, // trọng lực 300
-          //   debug: true,
-          // },
-          matter: {
-            gravity: { y: 300 },
+          default: "arcade", // khai báo va chạm vật lý
+          arcade: {
+            gravity: { y: 300 }, // trọng lực 300
+            debug: true,
           },
+          // matter: {
+          //   gravity: { y: 300 },
+          // },
         },
       };
 
@@ -196,7 +196,6 @@
             // newFruit.setRotation(20);
           }
         }
-        abc = true;
       }
 
       function downFruit(downX) {
@@ -227,36 +226,36 @@
           initFruits[randomNum]?.color
         );
         r1.setStrokeStyle(1, 0x000000);
-        const body = _this.matter.add.circle(
-          (width - initFruits[randomNum]?.r) / 2,
-          40,
-          initFruits[randomNum]?.r
-        );
-        _this.matter.add.gameObject(r1, body);
+        // const body = _this.matter.add.circle(
+        //   (width - initFruits[randomNum]?.r) / 2,
+        //   40,
+        //   initFruits[randomNum]?.r
+        // );
+        // _this.matter.add.gameObject(r1, body);
         // r1.body.setCircle(45);
 
-        r1.setBody({
-          type: "circle",
-          radius: 45,
-        });
+        // r1.setBody({
+        //   type: "circle",
+        //   radius: 45,
+        // });
       }
 
       function updateScene(time, delta) {
         if (newFruit) {
-          // this.tweens.add({
-          //   targets: newFruit,
-          //   props: {
-          //     x: {
-          //       value: function () {
-          //         return width - newFruit.width / 2;
-          //       },
-          //       ease: "Sine.easeIn",
-          //     },
-          //   },
-          //   duration: 500,
-          //   yoyo: false,
-          //   repeat: -1,
-          // });
+          this.tweens.add({
+            targets: newFruit,
+            props: {
+              x: {
+                value: function () {
+                  return width - newFruit.width / 2;
+                },
+                ease: "Sine.easeIn",
+              },
+            },
+            duration: 500,
+            yoyo: false,
+            repeat: -1,
+          });
         }
 
         this.physics.add.overlap(r1, fruitsArr, touchFruits, null, this);
